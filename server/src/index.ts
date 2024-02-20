@@ -6,6 +6,8 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { buildSchema } from 'type-graphql';
 import cors from 'cors';
 import { HelloResolver } from './resolvers/hello';
+import { UserResolver } from './resolvers/user';
+import { User } from './entities/User';
 
 dotEnvConfig({
   example: '.env',
@@ -22,13 +24,16 @@ async function main() {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    logging: true,
+    synchronize: true,
+    entities: [User],
   });
 
   await dataSource.initialize();
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [HelloResolver, UserResolver],
       validate: false,
     }),
   });
@@ -46,6 +51,6 @@ async function main() {
   });
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
 });
