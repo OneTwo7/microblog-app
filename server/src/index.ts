@@ -5,7 +5,6 @@ import { DataSource } from 'typeorm';
 import { expressMiddleware } from '@apollo/server/express4';
 import { buildSchema } from 'type-graphql';
 import cors from 'cors';
-import { HelloResolver } from './resolvers/hello';
 import { UserResolver } from './resolvers/user';
 import { User } from './entities/User';
 
@@ -33,7 +32,7 @@ async function main() {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver],
+      resolvers: [UserResolver],
       validate: false,
     }),
   });
