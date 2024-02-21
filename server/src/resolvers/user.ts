@@ -1,9 +1,11 @@
 import argon2 from 'argon2';
-import { Resolver, Query, Arg, Int, Field, InputType, Mutation } from 'type-graphql';
+import { Resolver, Query, Arg, Int, Field, InputType, Mutation, ObjectType } from 'type-graphql';
 import { User } from '../entities/User';
 
+const LOGIN_ERROR_MESSAGE = 'wrong user/password combination';
+
 @InputType()
-export class LoginInput {
+class LoginInput {
   @Field()
   usernameOrEmail: string;
 
@@ -23,6 +25,24 @@ class RegisterInput {
   password: string;
 }
 
+@ObjectType()
+class FieldError {
+  @Field()
+  field: string;
+
+  @Field()
+  message: string;
+}
+
+@ObjectType()
+class UserResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field(() => User, { nullable: true })
+  user?: User;
+}
+
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
@@ -37,15 +57,114 @@ export class UserResolver {
     return users;
   }
 
-  @Mutation(() => User)
-  async register(@Arg('options') options: RegisterInput) {
+  @Mutation(() => UserResponse)
+  async register(@Arg('options') options: RegisterInput): Promise<UserResponse> {
+    const errors: FieldError[] = [];
+
+    if (options.username.length <= 2) {
+      errors.push({
+        field: 'username',
+        message: 'length must be greater than 2',
+      });
+    }
+
+    if (options.username.includes('@')) {
+      errors.push({
+        field: 'username',
+        message: "can't include a @ sign",
+      });
+    }
+
+    if (!options.email.includes('@')) {
+      errors.push({
+        field: 'email',
+        message: 'incorrect email',
+      });
+    }
+
+    if (options.password.length <= 5) {
+      errors.push({
+        field: 'password',
+        message: 'length must be greater than 5',
+      });
+    }
+
+    if (errors.length) {
+      return {
+        errors,
+      };
+    }
+
     const user = User.create({
       ...options,
       password: await argon2.hash(options.password),
     });
 
-    await user.save();
+    try {
+      await user.save();
+    } catch (err) {
+      if (err.code === '23505') {
+        if (err.detail.includes('username')) {
+          errors.push({
+            field: 'username',
+            message: 'username has already been taken',
+          });
+        } else if (err.detail.includes('email')) {
+          errors.push({
+            field: 'email',
+            message: 'user with this email is already registered',
+          });
+        }
+      }
 
-    return user;
+      if (errors.length) {
+        return {
+          errors,
+        };
+      }
+    }
+
+    return {
+      user,
+    };
+  }
+
+  @Mutation(() => UserResponse)
+  async login(@Arg('options') options: LoginInput): Promise<UserResponse> {
+    let user: User | null = null;
+
+    if (options.usernameOrEmail.includes('@')) {
+      user = await User.findOneBy({ email: options.usernameOrEmail });
+    } else {
+      user = await User.findOneBy({ username: options.usernameOrEmail });
+    }
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: 'usernameOrEmail',
+            message: LOGIN_ERROR_MESSAGE,
+          },
+        ],
+      };
+    }
+
+    const isPasswordValid = await argon2.verify(user.password, options.password);
+
+    if (!isPasswordValid) {
+      return {
+        errors: [
+          {
+            field: 'usernameOrEmail',
+            message: LOGIN_ERROR_MESSAGE,
+          },
+        ],
+      };
+    }
+
+    return {
+      user,
+    };
   }
 }
