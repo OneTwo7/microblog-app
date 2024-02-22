@@ -1,6 +1,7 @@
 import argon2 from 'argon2';
-import { Resolver, Query, Arg, Int, Field, InputType, Mutation, ObjectType } from 'type-graphql';
+import { Resolver, Query, Arg, Int, Field, InputType, Mutation, ObjectType, Ctx } from 'type-graphql';
 import { User } from '../entities/User';
+import { ApolloServerContext } from 'src/types';
 
 const LOGIN_ERROR_MESSAGE = 'wrong user/password combination';
 
@@ -57,8 +58,19 @@ export class UserResolver {
     return users;
   }
 
+  @Query(() => User, { nullable: true })
+  async currentUser(@Ctx() { req }: ApolloServerContext) {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const user = await User.findOneBy({ id: req.session.userId });
+
+    return user;
+  }
+
   @Mutation(() => UserResponse)
-  async register(@Arg('options') options: RegisterInput): Promise<UserResponse> {
+  async register(@Arg('options') options: RegisterInput, @Ctx() { req }: ApolloServerContext): Promise<UserResponse> {
     const errors: FieldError[] = [];
 
     if (options.username.length <= 2) {
@@ -124,13 +136,15 @@ export class UserResolver {
       }
     }
 
+    req.session.userId = user.id;
+
     return {
       user,
     };
   }
 
   @Mutation(() => UserResponse)
-  async login(@Arg('options') options: LoginInput): Promise<UserResponse> {
+  async login(@Arg('options') options: LoginInput, @Ctx() { req }: ApolloServerContext): Promise<UserResponse> {
     let user: User | null = null;
 
     if (options.usernameOrEmail.includes('@')) {
@@ -162,6 +176,8 @@ export class UserResolver {
         ],
       };
     }
+
+    req.session.userId = user.id;
 
     return {
       user,
