@@ -1,0 +1,6 @@
+fragment CurrentUser on User {
+  email
+  username
+  createdAt
+  updatedAt
+}

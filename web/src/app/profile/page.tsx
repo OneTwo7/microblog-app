@@ -1,20 +1,24 @@
-import { Typography } from '@mui/material';
+'use client';
+import { CircularProgress, Typography } from '@mui/material';
+import { useCurrentUserQuery } from '@/gql/graphql';
+import withApollo from '@/utils/withApollo';
 
-type ProfileProps = {
-  currentUser?: {
-    username: string;
-    email: string;
-  };
-};
+function Profile() {
+  const { data, loading } = useCurrentUserQuery();
 
-export default function Profile({ currentUser }: ProfileProps) {
-  if (!currentUser) {
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (!data?.currentUser) {
     return null;
   }
 
   return (
     <Typography>
-      {currentUser.username}, {currentUser.email}
+      {data.currentUser.username}, {data.currentUser.email}
     </Typography>
   );
 }
+
+export default withApollo({ ssr: false })(Profile);
