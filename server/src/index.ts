@@ -43,6 +43,13 @@ async function main() {
   });
 
   app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }),
+  );
+
+  app.use(
     session({
       name: COOKIE_NAME,
       store: redisStore,
