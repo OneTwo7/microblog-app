@@ -2,13 +2,12 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import NextLink from 'next/link';
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
-import { CurrentUserDocument, CurrentUserQuery, FieldError, useRegisterMutation } from '@/gql/graphql';
+import { KeyboardEvent } from 'react';
+import { CurrentUserDocument, CurrentUserQuery, useRegisterMutation } from '@/gql/graphql';
 import { useRouter } from 'next/navigation';
 import { LoadingButton } from '@mui/lab';
 import withApollo from '@/utils/withApollo';
-
-type UserField = 'email' | 'username' | 'password';
+import { useForm } from '@/hooks';
 
 type FormErrors = {
   email?: string;
@@ -17,48 +16,9 @@ type FormErrors = {
   'password-confirmation'?: string;
 };
 
-function useForm() {
-  const [formData, setFormData] = useState<{ [key: string]: string | undefined }>({});
-  const [formErrors, setFormErrors] = useState<FormErrors>();
-
-  const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name } = event.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: event.target.value,
-    }));
-    setFormErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
-    }));
-  };
-
-  const mapErrors = (errors?: FieldError[]) => {
-    if (!errors) {
-      setFormErrors(undefined);
-      return;
-    }
-
-    setFormErrors(
-      errors.reduce((agg, cur) => {
-        agg[cur.field as UserField] = cur.message;
-        return agg;
-      }, {} as FormErrors),
-    );
-  };
-
-  return {
-    formData,
-    formErrors,
-    onChange,
-    mapErrors,
-  };
-}
-
 function Register() {
   const router = useRouter();
-  const { formData, formErrors, onChange, mapErrors } = useForm();
+  const { formData, formErrors, onChange, mapErrors } = useForm<FormErrors>();
   const [register, { loading }] = useRegisterMutation();
 
   const handleSubmit = async () => {

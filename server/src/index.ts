@@ -43,13 +43,6 @@ async function main() {
   });
 
   app.use(
-    cors({
-      origin: 'http://localhost:3000',
-      credentials: true,
-    }),
-  );
-
-  app.use(
     session({
       name: COOKIE_NAME,
       store: redisStore,
@@ -76,7 +69,10 @@ async function main() {
 
   app.use(
     '/graphql',
-    cors<cors.CorsRequest>(),
+    cors<cors.CorsRequest>({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }),
     express.json(),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }) => ({

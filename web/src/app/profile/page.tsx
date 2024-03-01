@@ -1,5 +1,5 @@
 'use client';
-import { CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { useCurrentUserQuery } from '@/gql/graphql';
 import withApollo from '@/utils/withApollo';
 
@@ -7,7 +7,11 @@ function Profile() {
   const { data, loading } = useCurrentUserQuery();
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <Box display="flex" justifyContent="center" p={4}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (!data?.currentUser) {
@@ -15,9 +19,11 @@ function Profile() {
   }
 
   return (
-    <Typography>
-      {data.currentUser.username}, {data.currentUser.email}
-    </Typography>
+    <Box p={4}>
+      <Typography>
+        {data.currentUser.username}, {data.currentUser.email}
+      </Typography>
+    </Box>
   );
 }
 
