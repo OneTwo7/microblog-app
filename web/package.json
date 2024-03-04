@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.9.5",
+    "@apollo/experimental-nextjs-app-support": "^0.8.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -20,7 +21,6 @@
     "@mui/material-nextjs": "^5.15.11",
     "graphql": "^16.8.1",
     "next": "14.1.0",
-    "next-apollo": "^5.0.8",
     "react": "^18",
     "react-dom": "^18"
   },

@@ -2,7 +2,6 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
-import withApollo from '@/utils/withApollo';
 import { useForm } from '@/hooks';
 import { CurrentUserDocument, CurrentUserQuery, useLoginMutation } from '@/gql/graphql';
 import { LoadingButton } from '@mui/lab';
@@ -13,7 +12,7 @@ type FormErrors = {
   password?: string;
 };
 
-function Login() {
+export default function Login() {
   const router = useRouter();
   const { formData, formErrors, onChange, mapErrors } = useForm<FormErrors>();
   const [register, { loading }] = useLoginMutation();
@@ -101,5 +100,3 @@ function Login() {
     </Box>
   );
 }
-
-export default withApollo({ ssr: false })(Login);

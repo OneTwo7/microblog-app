@@ -3,11 +3,10 @@ import { MouseEvent, useState } from 'react';
 import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { usePathname, useRouter } from 'next/navigation';
-import withApollo from '@/utils/withApollo';
 import { useCurrentUserQuery } from '@/gql/graphql';
 import LoginButton from './loginButton';
 
-function Navbar() {
+export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const { data, loading } = useCurrentUserQuery();
   const pathname = usePathname();
@@ -105,5 +104,3 @@ function Navbar() {
     </AppBar>
   );
 }
-
-export default withApollo({ ssr: false })(Navbar);

@@ -6,7 +6,6 @@ import { KeyboardEvent } from 'react';
 import { CurrentUserDocument, CurrentUserQuery, useRegisterMutation } from '@/gql/graphql';
 import { useRouter } from 'next/navigation';
 import { LoadingButton } from '@mui/lab';
-import withApollo from '@/utils/withApollo';
 import { useForm } from '@/hooks';
 
 type FormErrors = {
@@ -16,7 +15,7 @@ type FormErrors = {
   'password-confirmation'?: string;
 };
 
-function Register() {
+export default function Register() {
   const router = useRouter();
   const { formData, formErrors, onChange, mapErrors } = useForm<FormErrors>();
   const [register, { loading }] = useRegisterMutation();
@@ -151,5 +150,3 @@ function Register() {
     </Box>
   );
 }
-
-export default withApollo({ ssr: false })(Register);

@@ -1,9 +1,8 @@
 'use client';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useCurrentUserQuery } from '@/gql/graphql';
-import withApollo from '@/utils/withApollo';
 
-function Profile() {
+export default function Profile() {
   const { data, loading } = useCurrentUserQuery();
 
   if (loading) {
@@ -26,5 +25,3 @@ function Profile() {
     </Box>
   );
 }
-
-export default withApollo({ ssr: false })(Profile);

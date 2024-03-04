@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import Navbar from '../components/navbar';
 import { Container } from '@mui/material';
+import { ApolloWrapper } from './apolloWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,11 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} style={{ margin: 0 }}>
-        <AppRouterCacheProvider>
-          {/* @ts-ignore */}
-          <Navbar />
-          <Container>{children}</Container>
-        </AppRouterCacheProvider>
+        <ApolloWrapper>
+          <AppRouterCacheProvider>
+            <Navbar />
+            <Container>{children}</Container>
+          </AppRouterCacheProvider>
+        </ApolloWrapper>
       </body>
     </html>
   );

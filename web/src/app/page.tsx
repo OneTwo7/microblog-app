@@ -1,7 +1,19 @@
+import { CurrentUserDocument } from '@/gql/graphql';
+import { getClient } from '@/utils/apolloClient';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 
-export default function Home() {
+export default async function Home() {
+  const apolloClient = getClient();
+  const { data, loading } = await apolloClient.query({
+    query: CurrentUserDocument,
+  });
+
+  console.log({
+    data,
+    loading,
+  });
+
   return (
     <Box
       display="flex"
@@ -21,9 +33,11 @@ export default function Home() {
       <Typography variant="body1" mb={4}>
         This is the home page for the Next.js Sample Application based on Ruby on Rails Tutorial
       </Typography>
-      <Link href="/register" style={{ marginBottom: '2rem' }}>
-        <Button variant="contained">Sign up now</Button>
-      </Link>
+      {!loading && !data?.currentUser && (
+        <Link href="/register" style={{ marginBottom: '2rem' }}>
+          <Button variant="contained">Sign up now</Button>
+        </Link>
+      )}
     </Box>
   );
 }
