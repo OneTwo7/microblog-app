@@ -1,12 +1,15 @@
 'use client';
 import { MouseEvent, useState } from 'react';
-import { AppBar, Box, Button, IconButton, Link, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import NextLink from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import withApollo from '@/utils/withApollo';
+import { useCurrentUserQuery } from '@/gql/graphql';
+import LoginButton from './loginButton';
 
-export default function Navbar() {
+function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const { data, loading } = useCurrentUserQuery();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -80,19 +83,27 @@ export default function Navbar() {
             }}
           >
             <MenuItem onClick={handleCloseNavMenu}>
-              <Link variant="button" color="inherit" sx={{ textDecoration: 'none' }}>
-                Log in
-              </Link>
+              <LoginButton
+                isMenu={true}
+                isLoading={loading}
+                currentUser={data?.currentUser}
+                onClick={handleCloseNavMenu}
+              />
             </MenuItem>
           </Menu>
         </Box>
 
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end' } }}>
-          <NextLink href="/login" style={{ textDecoration: 'none' }} onClick={handleCloseNavMenu}>
-            <Button sx={{ color: 'white' }}>Log in</Button>
-          </NextLink>
+          <LoginButton
+            isMenu={false}
+            isLoading={loading}
+            currentUser={data?.currentUser}
+            onClick={handleCloseNavMenu}
+          />
         </Box>
       </Toolbar>
     </AppBar>
   );
 }
+
+export default withApollo({ ssr: false })(Navbar);
