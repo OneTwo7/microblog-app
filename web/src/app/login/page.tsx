@@ -15,10 +15,10 @@ type FormErrors = {
 export default function Login() {
   const router = useRouter();
   const { formData, formErrors, onChange, mapErrors } = useForm<FormErrors>();
-  const [register, { loading }] = useLoginMutation();
+  const [login, { loading }] = useLoginMutation();
 
   const handleSubmit = async () => {
-    const response = await register({
+    const response = await login({
       variables: {
         options: {
           usernameOrEmail: formData.usernameOrEmail || '',
@@ -67,6 +67,7 @@ export default function Login() {
           value={formData['usernameOrEmail'] || ''}
           helperText={formErrors && formErrors['usernameOrEmail']}
           error={formErrors && !!formErrors['usernameOrEmail']}
+          autoFocus
           fullWidth
           required
           sx={{ mb: 4 }}

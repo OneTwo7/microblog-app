@@ -9,18 +9,15 @@ export default async function Home() {
     query: CurrentUserDocument,
   });
 
-  console.log({
-    data,
-    loading,
-  });
-
   return (
     <Box
       display="flex"
       alignItems="center"
       flexDirection="column"
       p={4}
+      pb={8}
       sx={{
+        position: 'relative',
         borderBottomRightRadius: '7.5px',
         borderBottomLeftRadius: '7.5px',
         backgroundColor: '#ddd',
@@ -34,7 +31,7 @@ export default async function Home() {
         This is the home page for the Next.js Sample Application based on Ruby on Rails Tutorial
       </Typography>
       {!loading && !data?.currentUser && (
-        <Link href="/register" style={{ marginBottom: '2rem' }}>
+        <Link href="/register" style={{ position: 'absolute', bottom: '2rem' }}>
           <Button variant="contained">Sign up now</Button>
         </Link>
       )}

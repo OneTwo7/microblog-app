@@ -1,6 +1,9 @@
+'use client';
 import NextLink from 'next/link';
-import { Typography } from '@mui/material';
-import { User } from '@/gql/graphql';
+import { Button, Typography } from '@mui/material';
+import { User, useLogoutMutation } from '@/gql/graphql';
+import { useApolloClient } from '@apollo/client';
+import { useRouter } from 'next/navigation';
 
 type LoginButtonProps = {
   isMenu: boolean;
@@ -10,8 +13,29 @@ type LoginButtonProps = {
 };
 
 export default function LoginButton({ isMenu, isLoading, currentUser, onClick }: LoginButtonProps) {
-  if (isLoading || currentUser) {
+  const apolloClient = useApolloClient();
+  const [logout, { loading: isLogoutLoading }] = useLogoutMutation();
+  const router = useRouter();
+
+  if (isLoading) {
     return null;
+  }
+
+  if (currentUser) {
+    return (
+      <Button
+        variant="text"
+        sx={{ color: isMenu ? '#000' : '#fff' }}
+        disabled={isLogoutLoading}
+        onClick={async () => {
+          await logout();
+          await apolloClient.resetStore();
+          router.push('/');
+        }}
+      >
+        Log out
+      </Button>
+    );
   }
 
   return (

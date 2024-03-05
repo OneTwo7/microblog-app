@@ -1,19 +1,23 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { AUTH_COOKIE_NAME } from '@/constants';
+import { ApolloClient, HttpLink, HttpOptions, InMemoryCache } from '@apollo/client';
 import { registerApolloClient } from '@apollo/experimental-nextjs-app-support/rsc';
-import { NextPageContext } from 'next';
 import { cookies } from 'next/headers';
 
 export const { getClient } = registerApolloClient(() => {
-  const appCookies = cookies();
-  const qid = appCookies.get('qid');
+  const authCookie = cookies().get(AUTH_COOKIE_NAME);
+  const httpOptions: HttpOptions = {
+    uri: 'http://localhost:4000/graphql',
+    credentials: 'include',
+  };
+
+  if (authCookie) {
+    httpOptions.headers = {
+      cookie: `${authCookie.name}=${encodeURIComponent(authCookie.value)}`,
+    };
+  }
+
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: new HttpLink({
-      uri: 'http://localhost:4000/graphql',
-    }),
-    credentials: 'include',
-    headers: {
-      cookie: qid ? `${qid.name}=${encodeURIComponent(qid.value)}` : '',
-    },
+    link: new HttpLink(httpOptions),
   });
 });

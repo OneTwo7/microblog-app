@@ -1,9 +1,12 @@
-'use client';
 import { Box, CircularProgress, Typography } from '@mui/material';
-import { useCurrentUserQuery } from '@/gql/graphql';
+import { CurrentUserDocument } from '@/gql/graphql';
+import { getClient } from '@/utils/apolloClient';
 
-export default function Profile() {
-  const { data, loading } = useCurrentUserQuery();
+export default async function Profile() {
+  const apolloClient = getClient();
+  const { data, loading } = await apolloClient.query({
+    query: CurrentUserDocument,
+  });
 
   if (loading) {
     return (

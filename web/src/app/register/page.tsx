@@ -1,6 +1,5 @@
 'use client';
 import { Box, Button, TextField, Typography } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
 import NextLink from 'next/link';
 import { KeyboardEvent } from 'react';
 import { CurrentUserDocument, CurrentUserQuery, useRegisterMutation } from '@/gql/graphql';
@@ -81,6 +80,7 @@ export default function Register() {
           value={formData['username'] || ''}
           helperText={formErrors && formErrors['username']}
           error={formErrors && !!formErrors['username']}
+          autoFocus
           fullWidth
           required
           sx={{ mb: 4 }}
@@ -127,15 +127,7 @@ export default function Register() {
           required
           sx={{ mb: 4 }}
         />
-        <LoadingButton
-          variant="outlined"
-          color="primary"
-          type="button"
-          endIcon={<SendIcon />}
-          loadingPosition="end"
-          loading={loading}
-          onClick={handleSubmit}
-        >
+        <LoadingButton variant="outlined" color="primary" type="button" loading={loading} onClick={handleSubmit}>
           Register
         </LoadingButton>
       </form>

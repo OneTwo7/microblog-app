@@ -83,7 +83,10 @@ async function main() {
   );
 
   app.get('/', (_, res) => {
-    res.send('Hello there');
+    res.send({
+      up: true,
+      name: 'microblog-app-server',
+    });
   });
 
   app.listen(PORT, () => {

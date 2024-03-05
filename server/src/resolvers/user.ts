@@ -1,7 +1,8 @@
 import argon2 from 'argon2';
 import { Resolver, Query, Arg, Int, Field, InputType, Mutation, ObjectType, Ctx } from 'type-graphql';
 import { User } from '../entities/User';
-import { ApolloServerContext } from 'src/types';
+import { ApolloServerContext } from '../types';
+import { COOKIE_NAME } from '../constants';
 
 const LOGIN_ERROR_MESSAGE = 'wrong user/password combination';
 
@@ -182,5 +183,22 @@ export class UserResolver {
     return {
       user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: ApolloServerContext) {
+    return new Promise((resolve) =>
+      req.session.destroy((err) => {
+        res.clearCookie(COOKIE_NAME);
+
+        if (err) {
+          console.error(err);
+          resolve(false);
+          return;
+        }
+
+        resolve(true);
+      }),
+    );
   }
 }
