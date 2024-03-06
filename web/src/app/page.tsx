@@ -1,13 +1,10 @@
-import { CurrentUserDocument } from '@/gql/graphql';
-import { getClient } from '@/utils/apolloClient';
+'use client';
+import { useCurrentUserQuery } from '@/gql/graphql';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 
-export default async function Home() {
-  const apolloClient = getClient();
-  const { data, loading } = await apolloClient.query({
-    query: CurrentUserDocument,
-  });
+export default function Home() {
+  const { data, loading } = useCurrentUserQuery();
 
   return (
     <Box
