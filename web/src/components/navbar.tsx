@@ -3,12 +3,10 @@ import { MouseEvent, useState } from 'react';
 import { AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCurrentUserQuery } from '@/gql/graphql';
 import LoginButton from './loginButton';
 
 export default function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const { data, loading } = useCurrentUserQuery();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -82,23 +80,13 @@ export default function Navbar() {
             }}
           >
             <MenuItem onClick={handleCloseNavMenu}>
-              <LoginButton
-                isMenu={true}
-                isLoading={loading}
-                currentUser={data?.currentUser}
-                onClick={handleCloseNavMenu}
-              />
+              <LoginButton isMenu={true} onClick={handleCloseNavMenu} />
             </MenuItem>
           </Menu>
         </Box>
 
         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end' } }}>
-          <LoginButton
-            isMenu={false}
-            isLoading={loading}
-            currentUser={data?.currentUser}
-            onClick={handleCloseNavMenu}
-          />
+          <LoginButton isMenu={false} onClick={handleCloseNavMenu} />
         </Box>
       </Toolbar>
     </AppBar>
