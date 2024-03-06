@@ -92,7 +92,7 @@ export default function Login() {
       </form>
       <Typography variant="body2" mt={2}>
         New user?{' '}
-        <NextLink href="/resister" style={{ textDecoration: 'none' }}>
+        <NextLink href="/register" style={{ textDecoration: 'none' }}>
           <Button variant="text" sx={{ textDecoration: 'none', textTransform: 'none' }}>
             Sign up
           </Button>
