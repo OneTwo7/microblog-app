@@ -1,0 +1,4 @@
+fragment ValidationError on FieldError {
+  field
+  message
+}
