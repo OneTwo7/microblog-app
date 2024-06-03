@@ -1,11 +1,11 @@
 'use client';
 import { ApolloLink, HttpLink } from '@apollo/client';
 import {
+  ApolloClient,
   ApolloNextAppProvider,
-  NextSSRApolloClient,
-  NextSSRInMemoryCache,
+  InMemoryCache,
   SSRMultipartLink,
-} from '@apollo/experimental-nextjs-app-support/ssr';
+} from '@apollo/experimental-nextjs-app-support';
 
 function makeClient() {
   const httpLink = new HttpLink({
@@ -13,8 +13,8 @@ function makeClient() {
     credentials: 'include',
   });
 
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache(),
+  return new ApolloClient({
+    cache: new InMemoryCache(),
     link:
       typeof window === 'undefined'
         ? ApolloLink.from([
