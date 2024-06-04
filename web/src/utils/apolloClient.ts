@@ -1,6 +1,6 @@
 import { AUTH_COOKIE_NAME } from '@/constants';
 import { ApolloClient, HttpLink, HttpOptions, InMemoryCache } from '@apollo/client';
-import { registerApolloClient } from '@apollo/experimental-nextjs-app-support/rsc';
+import { registerApolloClient } from '@apollo/experimental-nextjs-app-support';
 import { cookies } from 'next/headers';
 
 export const { getClient } = registerApolloClient(() => {

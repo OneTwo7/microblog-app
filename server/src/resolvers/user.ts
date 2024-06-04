@@ -1,8 +1,8 @@
 import argon2 from 'argon2';
 import { Resolver, Query, Arg, Int, Field, InputType, Mutation, ObjectType, Ctx } from 'type-graphql';
-import { User } from '../entities/User';
-import { ApolloServerContext } from '../types';
-import { COOKIE_NAME } from '../constants';
+import { User } from '@/entities/User';
+import { ApolloServerContext } from '@/types';
+import { COOKIE_NAME } from '@/constants';
 
 const LOGIN_ERROR_MESSAGE = 'wrong user/password combination';
 
