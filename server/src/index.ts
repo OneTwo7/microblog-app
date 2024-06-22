@@ -1,3 +1,4 @@
+import './paths';
 import { ApolloServer } from '@apollo/server';
 import { config as dotEnvConfig } from 'dotenv-safe';
 import express from 'express';
@@ -9,9 +10,9 @@ import redis from 'ioredis';
 import session from 'express-session';
 import RedisStore from 'connect-redis';
 import uuid from 'uuid';
-import { UserResolver } from './resolvers/user';
-import { User } from './entities/User';
-import { A_DAY, COOKIE_NAME, __prod__ } from './constants';
+import { UserResolver } from '@/resolvers/user';
+import { User } from '@/entities/User';
+import { A_DAY, COOKIE_NAME, __prod__ } from '@/constants';
 
 dotEnvConfig({
   example: '.env',

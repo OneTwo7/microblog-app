@@ -1,11 +1,7 @@
-'use client';
-import { useCurrentUserQuery } from '@/gql/graphql';
-import { Box, Button, Typography } from '@mui/material';
-import Link from 'next/link';
+import SignupButton from '@/components/signupButton';
+import { Box, Typography } from '@mui/material';
 
 export default function Home() {
-  const { data, loading } = useCurrentUserQuery();
-
   return (
     <Box
       display="flex"
@@ -27,11 +23,7 @@ export default function Home() {
       <Typography variant="body1" mb={4}>
         This is the home page for the Next.js Sample Application based on Ruby on Rails Tutorial
       </Typography>
-      {!loading && !data?.currentUser && (
-        <Link href="/register" style={{ position: 'absolute', bottom: '2rem' }}>
-          <Button variant="contained">Sign up now</Button>
-        </Link>
-      )}
+      <SignupButton />
     </Box>
   );
 }
